@@ -34,6 +34,11 @@
     const fileInput = uploadForm.fileInput;
     const toggleBtn = uploadForm.toggleBtn;
 
+    uploadForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        FILE_ACTION.fileUpload(fileInput);
+    });
+    fileInput.addEventListener("change", fileChecker);
     toggleBtn.addEventListener("click", () => fileInput.toggleAttribute("multiple"));
 </script>
 </body>

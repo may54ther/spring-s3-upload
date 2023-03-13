@@ -7,6 +7,28 @@ const FILE_CONFIG = {
 }
 
 /** =======================
+ * Func
+ * ======================= */
+function isFileSizeWithinLimit(size) {
+    return 0 < size && FILE_CONFIG.MAX_SIZE > size;
+}
+
+function fileChecker() {
+    const $files = this.files;
+
+    if ($files.length > 5)
+        alert("최대 5개까지 첨부할 수 있습니다.")
+    else {
+        for (const file of $files) {
+            if (!isFileSizeWithinLimit(file.size)) {
+                this.value = "";
+                alert("각각의 파일의 용량은 50MB를 초과할 수 없습니다." + "\n(" + (file.name) + ")");
+            }
+        }
+    }
+}
+
+/** =======================
  * Event
  * ======================= */
 function onChecked() {
@@ -59,7 +81,29 @@ const FILE_ACTION = {
             })
             .catch(error => console.warn(error))
     },
-    "fileUpload": function () {
+    "fileUpload": function (input) {
+        const formData = new FormData();
+        const files = input.files;
+        for (const file of files) {
+            formData.append("files", file);
+        }
+
+        fetch("/api/files/upload", {
+            method: "POST",
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (!result.success) {
+                    throw new Error(result.error.message);
+                }
+                alert("파일 전송이 완료되었습니다.");
+                input.value = "";
+            })
+            .catch(error => {
+                console.warn(error)
+                alert("파일 전송에 실패하였습니다.")
+            });
     },
     "fileDownload": function () {
     },
