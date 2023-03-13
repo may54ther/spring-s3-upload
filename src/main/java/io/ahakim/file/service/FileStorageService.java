@@ -1,6 +1,8 @@
 package io.ahakim.file.service;
 
 import io.ahakim.file.domain.AttachFile;
+import io.ahakim.file.dto.DownloadFile;
+import io.ahakim.file.dto.StoreFile;
 import io.ahakim.file.dto.request.FileUploadRequest;
 import io.ahakim.file.dto.response.FileInfoResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,16 @@ public class FileStorageService {
                               .stream()
                               .map(AttachFile::toFileInfoResponse)
                               .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public DownloadFile download(Integer id) {
+        StoreFile storeFile = metadataService.findById(id).toStoreFile();
+        String keyName = createKey(storeFile.getUuid(), storeFile.getName());
+        return DownloadFile.builder()
+                           .storeFile(storeFile)
+                           .fileBytes(s3Service.getObjectAsBytes(keyName, storeFile.getName()))
+                           .build();
     }
 
     @Transactional

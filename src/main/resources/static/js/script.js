@@ -28,6 +28,28 @@ function fileChecker() {
     }
 }
 
+function extractContentDisposition(headers) {
+    const contentDisposition = headers.get('Content-Disposition');
+    if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+            return decodeURI(matches[1].replace(/['"]/g, ''));
+        }
+    }
+}
+
+function saveAs(payload, filename) {
+    let url = window.URL.createObjectURL(payload);
+    let anchorElement = document.createElement('a');
+
+    anchorElement.href = url;
+    anchorElement.download = filename;
+    document.body.appendChild(anchorElement);
+    anchorElement.click();
+    document.body.removeChild(anchorElement);
+}
+
 /** =======================
  * Event
  * ======================= */
@@ -79,7 +101,10 @@ const FILE_ACTION = {
                     listElement.append(createElement);
                 });
             })
-            .catch(error => console.warn(error))
+            .catch(error => {
+                alert("파일 목록을 불러오지 못했습니다.");
+                console.warn(error)
+            })
     },
     "fileUpload": function (input) {
         const formData = new FormData();
@@ -101,11 +126,30 @@ const FILE_ACTION = {
                 input.value = "";
             })
             .catch(error => {
-                console.warn(error)
                 alert("파일 전송에 실패하였습니다.")
+                console.warn(error)
             });
     },
-    "fileDownload": function () {
+    "fileDownload": function (id) {
+        fetch(`/api/files/${id}`, {
+            method: "GET"
+        })
+            .then(response => {
+                const filename = extractContentDisposition(response.headers)
+                if (!filename) {
+                    return response.json().then(result => {
+                        throw new Error(result.error.message);
+                    })
+                }
+                return response.blob().then(blob => {
+                    console.log(blob)
+                    saveAs(blob, filename);
+                })
+            })
+            .catch(error => {
+                alert("파일 다운로드에 실패하였습니다.");
+                console.warn(error);
+            })
     },
     "singleFileDelete": function () {
     },

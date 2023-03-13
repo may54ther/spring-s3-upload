@@ -9,8 +9,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,41 +19,37 @@ public class S3Service {
     @Value("${aws.s3.bucket}")
     private String bucketName;
 
-
-    public void putObject(MultipartFile file, String keyName) throws IOException {
-        s3Client.putObject(PutObjectRequest.builder()
-                                           .bucket(bucketName)
-                                           .key(keyName)
-                                           .build(),
-                           RequestBody.fromBytes(file.getBytes()));
-    }
-
-    public void deleteObject(String keyName) {
-        s3Client.deleteObject(DeleteObjectRequest.builder()
-                                                 .bucket(bucketName)
-                                                 .key(keyName)
-                                                 .build());
-    }
-
-    public void deleteObjects(List<String> keyNames) {
-        ArrayList<ObjectIdentifier> keys = new ArrayList<>();
-        keyNames.forEach(keyName -> {
-            keys.add(ObjectIdentifier.builder()
-                                     .key(keyName)
-                                     .build());
-        });
-
-        Delete del = Delete.builder()
-                           .objects(keys)
-                           .build();
+    public Long getContentLength(String keyName) {
         try {
-            DeleteObjectsRequest multiObjectDeleteRequest = DeleteObjectsRequest.builder()
-                                                                                .bucket(bucketName)
-                                                                                .delete(del)
-                                                                                .build();
-            s3Client.deleteObjects(multiObjectDeleteRequest);
+            HeadObjectRequest request = HeadObjectRequest.builder()
+                                                         .key(keyName)
+                                                         .bucket(bucketName)
+                                                         .build();
+            HeadObjectResponse response = s3Client.headObject(request);
+            return response.contentLength();
         } catch (S3Exception e) {
             System.err.println(e.awsErrorDetails().errorMessage());
+            return null;
         }
+    }
+
+
+    public byte[] getObjectAsBytes(String keyName, String filename) {
+        GetObjectRequest request = GetObjectRequest.builder()
+                                                   .bucket(bucketName)
+                                                   .key(keyName)
+                                                   .build();
+        System.out.println(request);
+        return s3Client.getObjectAsBytes(request)
+                       .asByteArray();
+
+    }
+
+    public void putObject(MultipartFile file, String keyName) throws IOException {
+        PutObjectRequest request = PutObjectRequest.builder()
+                                                   .bucket(bucketName)
+                                                   .key(keyName)
+                                                   .build();
+        s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
     }
 }
