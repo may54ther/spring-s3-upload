@@ -1,7 +1,6 @@
 package io.ahakim.file.domain;
 
 
-import io.ahakim.file.dto.StoreFile;
 import io.ahakim.file.dto.response.FileInfoResponse;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,15 +29,6 @@ public class AttachFile {
         this.name = name;
         this.size = size;
         this.createdAt = createdAt;
-    }
-
-    public StoreFile toStoreFile() {
-        return StoreFile.builder()
-                        .id(id)
-                        .uuid(uuid)
-                        .name(name)
-                        .size(size)
-                        .build();
     }
 
     public FileInfoResponse toFileInfoResponse() {
