@@ -9,4 +9,10 @@ import java.util.List;
 public interface FileMapper {
 
     List<AttachFile> selectAll();
+
+    AttachFile selectById(int id);
+
+    void insert(AttachFile file);
+
+    void delete(int id);
 }
