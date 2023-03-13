@@ -174,6 +174,39 @@ const FILE_ACTION = {
                 })
         }
     },
-    "multipleFileDelete": function () {
+    "multipleFileDelete": function (event) {
+        const fileListBody = document.getElementById('fileListBody');
+        const checkedInputs = document.querySelectorAll('input[name=checkInput]:checked')
+        const checkedList = Array.from(checkedInputs).map(el => el.value);
+
+        if (checkedInputs.length < 1)
+            alert("1개 이상의 파일을 선택해주세요.")
+        else {
+            if (confirm("선택한 파일을 모두 삭제하시습니까?")) {
+                fetch(`/api/files/delete`, {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8',
+                    },
+                    body: JSON.stringify(checkedList),
+
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (!result.success) {
+                            throw new Error(result.error.message);
+                        }
+                        checkedInputs.forEach((el,) => {
+                            const row = el.parentNode.parentNode;
+                            fileListBody.removeChild(row)
+                        })
+                        alert("파일이 삭제되었습니다.");
+                    })
+                    .catch(error => {
+                        alert("파일 삭제에 실패하였습니다.");
+                        console.warn(error)
+                    })
+            }
+        }
     }
 }

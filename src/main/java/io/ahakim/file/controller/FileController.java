@@ -53,6 +53,12 @@ public class FileController {
         return success(true);
     }
 
+    @DeleteMapping("/delete")
+    public ApiResponse<Boolean> deleteFiles(@RequestBody List<Integer> deleteIds) {
+        fileService.deleteFiles(deleteIds);
+        return success(true);
+    }
+
     private String createContentDisposition(String name) {
         String filename = URLEncoder.encode(name, StandardCharsets.UTF_8);
         return "attachment; filename=\"" + filename + "\"";
