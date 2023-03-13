@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.8'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+    id 'org.springframework.boot' version '2.7.8'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
 group = 'io.ahakim'
@@ -9,25 +9,32 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	compileOnly 'org.springframework.boot:spring-boot-devtools'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+    implementation platform('software.amazon.awssdk:bom:2.19.28')
+    implementation 'software.amazon.awssdk:s3'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    compileOnly 'org.springframework.boot:spring-boot-devtools'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+    systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
 }
