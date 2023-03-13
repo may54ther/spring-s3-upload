@@ -31,50 +31,7 @@
                             <th class="text-center font-size-14" scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="fileListBody">
-                        <!-- 임시 -->
-                        <tr>
-                            <th scope="row"><input type="checkbox" id="file_23" name="checkInput" value="23" onchange="onChecked()" class="form-check-input"></th>
-                            <td>
-                                <label for="file_23">사진.jpg</label>
-                            </td>
-                            <td class="list-btn text-center">
-                                <button class="btn text-primary"><i class="bi bi-download"></i></button>
-                                <button class="btn text-danger"><i class="bi bi-trash3"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><input type="checkbox" id="file_241" name="checkInput" value="241" onchange="onChecked()" class="form-check-input"></th>
-                            <td>
-                                <label for="file_241">문서.pdf</label>
-                            </td>
-                            <td class="list-btn text-center">
-                                <button class="btn text-primary"><i class="bi bi-download"></i></button>
-                                <button class="btn text-danger"><i class="bi bi-trash3"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><input type="checkbox" id="file_242" name="checkInput" value="242" onchange="onChecked()" class="form-check-input"></th>
-                            <td>
-                                <label for="file_242">PT자료.ppt</label>
-                            </td>
-                            <td class="list-btn text-center">
-                                <button class="btn text-primary"><i class="bi bi-download"></i></button>
-                                <button class="btn text-danger"><i class="bi bi-trash3"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><input type="checkbox" id="file_243" name="checkInput" value="243" onchange="onChecked()" class="form-check-input"></th>
-                            <td>
-                                <label for="file_243">압축파일.zip</label>
-                            </td>
-                            <td class="list-btn text-center">
-                                <button class="btn text-primary"><i class="bi bi-download"></i></button>
-                                <button class="btn text-danger"><i class="bi bi-trash3"></i></button>
-                            </td>
-                        </tr>
-                        <!-- !임시 -->
-                    </tbody>
+                    <tbody id="fileListBody"></tbody>
                 </table>
             </div>
             <div class="file-button text-end">
@@ -88,5 +45,8 @@
 </div>
 
 <script src="/js/script.js"></script>
+<script>
+    window.addEventListener("DOMContentLoaded", FILE_ACTION.fileList);
+</script>
 </body>
 </html>
