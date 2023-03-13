@@ -1,12 +1,16 @@
 package io.ahakim.file.service;
 
 import io.ahakim.file.domain.AttachFile;
+import io.ahakim.file.dto.request.FileUploadRequest;
 import io.ahakim.file.dto.response.FileInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,4 +28,27 @@ public class FileStorageService {
                               .map(AttachFile::toFileInfoResponse)
                               .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void upload(List<MultipartFile> files) throws IOException {
+        for (MultipartFile file : files) {
+            FileUploadRequest uploadFile = FileUploadRequest.builder()
+                                                            .uuid(createUUID())
+                                                            .name(file.getOriginalFilename())
+                                                            .size(file.getSize())
+                                                            .build();
+            String keyName = createKey(uploadFile.getUuid(), uploadFile.getName());
+            metadataService.save(uploadFile);
+            s3Service.putObject(file, keyName);
+        }
+    }
+
+    private String createUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    private String createKey(String path, String filename) {
+        return path + "/" + filename;
+    }
 }
+
