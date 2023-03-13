@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 
@@ -19,27 +21,11 @@ public class S3Service {
     @Value("${aws.s3.bucket}")
     private String bucketName;
 
-    public Long getContentLength(String keyName) {
-        try {
-            HeadObjectRequest request = HeadObjectRequest.builder()
-                                                         .key(keyName)
-                                                         .bucket(bucketName)
-                                                         .build();
-            HeadObjectResponse response = s3Client.headObject(request);
-            return response.contentLength();
-        } catch (S3Exception e) {
-            System.err.println(e.awsErrorDetails().errorMessage());
-            return null;
-        }
-    }
-
-
     public byte[] getObjectAsBytes(String keyName, String filename) {
         GetObjectRequest request = GetObjectRequest.builder()
                                                    .bucket(bucketName)
                                                    .key(keyName)
                                                    .build();
-        System.out.println(request);
         return s3Client.getObjectAsBytes(request)
                        .asByteArray();
 
@@ -51,5 +37,13 @@ public class S3Service {
                                                    .key(keyName)
                                                    .build();
         s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
+    }
+
+    public void deleteObject(String keyName) {
+        DeleteObjectRequest request = DeleteObjectRequest.builder()
+                                                         .bucket(bucketName)
+                                                         .key(keyName)
+                                                         .build();
+        s3Client.deleteObject(request);
     }
 }

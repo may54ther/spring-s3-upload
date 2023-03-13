@@ -47,6 +47,12 @@ public class FileController {
         return success(true);
     }
 
+    @DeleteMapping("/{id}")
+    public ApiResponse<Boolean> delete(@PathVariable Integer id) {
+        fileService.delete(id);
+        return success(true);
+    }
+
     private String createContentDisposition(String name) {
         String filename = URLEncoder.encode(name, StandardCharsets.UTF_8);
         return "attachment; filename=\"" + filename + "\"";

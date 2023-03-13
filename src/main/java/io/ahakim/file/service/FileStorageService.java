@@ -55,6 +55,14 @@ public class FileStorageService {
         }
     }
 
+    @Transactional
+    public void delete(Integer id) {
+        StoreFile storedFile = metadataService.findById(id).toStoreFile();
+        String keyName = createKey(storedFile.getUuid(), storedFile.getName());
+        metadataService.delete(id);
+        s3Service.deleteObject(keyName);
+    }
+
     private String createUUID() {
         return UUID.randomUUID().toString();
     }
@@ -63,4 +71,3 @@ public class FileStorageService {
         return path + "/" + filename;
     }
 }
-

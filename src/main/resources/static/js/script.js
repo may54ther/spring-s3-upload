@@ -151,7 +151,28 @@ const FILE_ACTION = {
                 console.warn(error);
             })
     },
-    "singleFileDelete": function () {
+    "singleFileDelete": function (event, id) {
+        const fileListBody = document.getElementById('fileListBody');
+        const deleteBtn = event.currentTarget;
+        const row = deleteBtn.parentNode.parentNode;
+
+        if (confirm("정말로 파일을 삭제하겠습니까?")) {
+            fetch(`/api/files/${id}`, {
+                method: "DELETE"
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.success) {
+                        throw new Error(result.error.message);
+                    }
+                    fileListBody.removeChild(row)
+                    alert("파일이 삭제되었습니다.");
+                })
+                .catch(error => {
+                    alert("파일 삭제에 실패하였습니다.");
+                    console.warn(error)
+                })
+        }
     },
     "multipleFileDelete": function () {
     }
