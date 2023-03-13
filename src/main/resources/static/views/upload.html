@@ -29,5 +29,12 @@
 </div>
 
 <script src="/js/script.js"></script>
+<script>
+    const uploadForm = document.uploadForm;
+    const fileInput = uploadForm.fileInput;
+    const toggleBtn = uploadForm.toggleBtn;
+
+    toggleBtn.addEventListener("click", () => fileInput.toggleAttribute("multiple"));
+</script>
 </body>
 </html>
