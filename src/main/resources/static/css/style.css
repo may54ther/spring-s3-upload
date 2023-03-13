@@ -1,0 +1,19 @@
+body {background-color: #ededed}
+#wrap {width: 100%; min-width: 480px}
+#container {width: 480px; margin: 0 auto}
+
+.form-label {font-size: 12px}
+.form-control {line-height: 2em}
+.form-check-input {border-color: #bdbdbd}
+.form-check-label {width: 100%}
+.font-size-14 {font-size: 14px}
+
+.title {margin: 15rem 0 4rem; text-align: center}
+
+.file-section .file-list {background: #fff}
+.file-list label {width: 100%;cursor: pointer;font-size: 14px;word-break: break-word}
+.file-list .list-btn .btn {width: 30px; height: 24px; padding: 0}
+.file-list .list-btn .btn:last-child,
+.file-button .btn:last-child {margin-left: 8px}
+.file-button .btn {padding: 0 1rem; line-height: 32px; border: 1px solid}
+
