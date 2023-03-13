@@ -2,7 +2,6 @@ package io.ahakim.file.exception;
 
 import io.ahakim.file.util.ApiUtil.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +12,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
-import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.exception.SdkException;
-import software.amazon.awssdk.core.exception.SdkServiceException;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
-import java.io.FileNotFoundException;
+import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static io.ahakim.file.util.ApiUtil.error;
@@ -38,49 +36,56 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(error(status, message), headers, status);
     }
 
+    /**
+     * Exception Handlers
+     */
+    @ExceptionHandler(S3Exception.class)
+    public ResponseEntity<?> S3Exception(S3Exception e) {
+        String errorMessage = "S3Exception occurred.";
+        if (e instanceof NoSuchKeyException)
+            errorMessage = "키에 해당하는 오브젝트를 찾을 수 없음";
 
-    @ExceptionHandler({FileNotFoundException.class})
-    public ResponseEntity<?> FileNotFoundException(Exception e) {
-        return newResponse(HttpStatus.NOT_FOUND, "File Not Found");
+        log.debug("⚠S3Exception occurred: {}", e.getMessage(), e);
+        return newResponse(HttpStatus.NOT_FOUND, errorMessage);
     }
 
-    @ExceptionHandler({AwsServiceException.class})
-    public ResponseEntity<?> AmazonServiceException(AwsServiceException e) {
-        log.debug("Amazon Web Service exception occurred: {}", (e.awsErrorDetails().errorMessage()));
-        return newResponse(HttpStatus.BAD_REQUEST, "Amazon Web Service error");
-    }
+    @ExceptionHandler(SdkException.class)
+    public ResponseEntity<?> AmazonException(SdkException e) {
+        String message = e.getMessage();
+        if (e instanceof AwsServiceException)
+            message = String.valueOf(((AwsServiceException) e).awsErrorDetails());
 
-    @ExceptionHandler({SdkClientException.class, SdkServiceException.class})
-    public ResponseEntity<?> AmazonSdkException(SdkException e) {
-        log.debug("Amazon Web Service SDK exception occurred: {}", e.getMessage(), e);
-        return newResponse(HttpStatus.BAD_REQUEST, "Amazon Web Service Sdk error");
+        log.debug("⚠️AmazonException: {}", message, e);
+        return newResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Amazon Web Service exception occurred.");
     }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<?> IOException(IOException e) {
-        log.debug("Not Found exception occurred: {}", e.getMessage(), e);
+        log.debug("⚠️IOException: {}", e.getMessage(), e);
         return newResponse(HttpStatus.BAD_REQUEST, e);
     }
 
     @ExceptionHandler({MultipartException.class})
     public ResponseEntity<?> MultipartException(MultipartException e) {
-        log.debug("Multipart exception occurred: {}", e.getMessage(), e);
+        log.debug("⚠️MultipartException: {}", e.getMessage(), e);
         return newResponse(HttpStatus.BAD_REQUEST, e);
     }
 
     @ExceptionHandler(HttpMediaTypeException.class)
-    public ResponseEntity<?> HttpMediaTypeException(HttpMediaTypeException e) {
+    public ResponseEntity<?> HttpMediaTypeException(ServletException e) {
+        log.debug("⚠HttpMediaTypeException: {}", e.getMessage(), e);
         return newResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<?> MethodNotAllowedException(HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity<?> MethodNotAllowedException(ServletException e) {
+        log.debug("⚠HttpRequestMethodNotSupportedException: {}", e.getMessage(), e);
         return newResponse(HttpStatus.METHOD_NOT_ALLOWED, e);
     }
 
-    @ExceptionHandler({NoHandlerFoundException.class, NotFoundException.class, NoSuchKeyException.class,})
-    public ResponseEntity<?> NotFoundException(Exception e) {
-        log.debug("Not Found exception occurred: {}", e.getMessage(), e);
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<?> NoHandlerFoundException(ServletException e) {
+        log.debug("⚠NoHandlerFoundException: {}", e.getMessage(), e);
         return newResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
