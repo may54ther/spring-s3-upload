@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class FileStorageService {
         String keyName = createKey(storeFile.getUuid(), storeFile.getName());
         return DownloadFile.builder()
                            .storeFile(storeFile)
-                           .fileBytes(s3Service.getObjectAsBytes(keyName, storeFile.getName()))
+                           .fileBytes(s3Service.getObjectAsBytes(keyName))
                            .build();
     }
 
@@ -61,6 +62,17 @@ public class FileStorageService {
         String keyName = createKey(storedFile.getUuid(), storedFile.getName());
         metadataService.delete(id);
         s3Service.deleteObject(keyName);
+    }
+
+    @Transactional
+    public void deleteFiles(List<Integer> ids) {
+        List<String> keyNames = new ArrayList<>();
+        for (Integer id : ids) {
+            StoreFile storedFile = metadataService.findById(id).toStoreFile();
+            keyNames.add(createKey(storedFile.getUuid(), storedFile.getName()));
+            metadataService.delete(id);
+        }
+        s3Service.deleteObjects(keyNames);
     }
 
     private String createUUID() {
