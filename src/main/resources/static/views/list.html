@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>S3 Upload/Download Sample</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<div id="wrap">
+    <h1 class="title h2">파일 목록</h1>
+
+    <main id="container">
+        <div class="file-section">
+            <div class="file-list">
+                <table id="fileList" class="table">
+                    <colgroup>
+                        <col style="width:32px">
+                        <col style="width:348px">
+                        <col style="width:100px">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <input type="checkbox" id="checkAll" class="form-check-input" onchange="onCheckedAll()">
+                            </th>
+                            <th scope="col"><label for="checkAll">Name</label></th>
+                            <th class="text-center font-size-14" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fileListBody">
+                        <!-- 임시 -->
+                        <tr>
+                            <th scope="row"><input type="checkbox" id="file_23" name="checkInput" value="23" onchange="onChecked()" class="form-check-input"></th>
+                            <td>
+                                <label for="file_23">사진.jpg</label>
+                            </td>
+                            <td class="list-btn text-center">
+                                <button class="btn text-primary"><i class="bi bi-download"></i></button>
+                                <button class="btn text-danger"><i class="bi bi-trash3"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><input type="checkbox" id="file_241" name="checkInput" value="241" onchange="onChecked()" class="form-check-input"></th>
+                            <td>
+                                <label for="file_241">문서.pdf</label>
+                            </td>
+                            <td class="list-btn text-center">
+                                <button class="btn text-primary"><i class="bi bi-download"></i></button>
+                                <button class="btn text-danger"><i class="bi bi-trash3"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><input type="checkbox" id="file_242" name="checkInput" value="242" onchange="onChecked()" class="form-check-input"></th>
+                            <td>
+                                <label for="file_242">PT자료.ppt</label>
+                            </td>
+                            <td class="list-btn text-center">
+                                <button class="btn text-primary"><i class="bi bi-download"></i></button>
+                                <button class="btn text-danger"><i class="bi bi-trash3"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><input type="checkbox" id="file_243" name="checkInput" value="243" onchange="onChecked()" class="form-check-input"></th>
+                            <td>
+                                <label for="file_243">압축파일.zip</label>
+                            </td>
+                            <td class="list-btn text-center">
+                                <button class="btn text-primary"><i class="bi bi-download"></i></button>
+                                <button class="btn text-danger"><i class="bi bi-trash3"></i></button>
+                            </td>
+                        </tr>
+                        <!-- !임시 -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="file-button text-end">
+                <button class="btn text-danger btn_delete">
+                    <i class="bi bi-trash3"></i>
+                    <span class="text font-size-14">삭제</span>
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="/js/script.js"></script>
+</body>
+</html>
