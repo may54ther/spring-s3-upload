@@ -42,3 +42,6 @@ dependencies {
 #### 삭제 (Delete)
 1. 단일 삭제
 2. 다중 삭제
+
+## Preview
+![preview image](./docs/file-upload-previews.jpg)
